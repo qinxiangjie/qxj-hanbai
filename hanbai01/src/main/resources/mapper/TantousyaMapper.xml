@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjob.demo.mapper.TantousyaMapper">
+	<!-- 担当者コードを検索  -->
+	<select id="selectTantousya" parameterType="String" resultType="com.itjob.demo.bean.Tantousya">
+		SELECT tantousyaCode,tantousyaName, password,bumonCode FROM tantousya WHERE
+		tantousyaCode=#{0}
+	</select>
+</mapper>

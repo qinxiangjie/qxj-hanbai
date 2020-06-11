@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itjob.demo.mapper.ShouhinMapper">
+	<resultMap type="com.itjob.demo.bean.Shouhin"
+		id="shouhinResultMap">
+		<id property="shouhinCode" column="shouhinCode" />
+		<result property="shouhinmei" column="shouhinmei" />
+		<result property="uriageTanka" column="uriageTanka" />
+		<result property="tani" column="tani" />
+		<result property="shiireTanka" column="shiireTanka" />
+		<result property="shiiresaki.shiiresakiCode"
+			column="shiiresakiCode" />
+		<result property="shiiresaki.shiiresakimei"
+			column="shiiresakimei" />
+		<result property="zaikosuu" column="zaikosuu" />
+		<result property="anzenZaikosuu" column="anzenZaikosuu" />
+		<result property="hacchuuTani" column="hacchuuTani" />
+		<result property="hacchuuHuragu" column="hacchuuHuragu" />
+	</resultMap>
+	<select id="selectShiiresakimei"
+		resultType="com.itjob.demo.bean.Shiiresaki">
+		SELECT
+		Distinct(shiiresaki.shiiresakiCode),shiiresaki.shiiresakimei
+		FROM
+		shouhin
+		LEFT JOIN shiiresaki
+		ON
+		(shiiresaki.shiiresakiCode=
+		shouhin.shiiresakiCode)
+		WHERE zaikosuu &lt; anzenZaikosuu
+		AND
+		hacchuuHuragu=0
+	</select>
+	<select id="selectHachuuShouhins" resultMap="shouhinResultMap">
+		SELECT * FROM
+		shouhin
+		WHERE zaikosuu &lt; anzenZaikosuu AND hacchuuHuragu=0 AND
+		shouhin.shiiresakiCode=#{0}
+	</select>
+</mapper>

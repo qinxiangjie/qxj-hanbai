@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+
+<head>
+<title>発注管理</title>
+<script type="text/javascript">
+	$(function() {
+		$("#shiiresakiCode").change(
+				function() {
+					window.sessionStorage.setItem([ 'shiiresakiCode' ],
+							document.getElementById("shiiresakiCode").value);
+					$("#form").submit();
+				});
+
+	});
+	function init() {
+		var sCode = window.sessionStorage.getItem([ 'shiiresakiCode' ]);
+		var shiiresakiCodes = document.getElementById("shiiresakiCode");
+		if (sCode != null && sCode.trim() != "") {
+			for (i = 0; i < shiiresakiCodes.options.length; i++) {
+				if (shiiresakiCodes.options[i].value == sCode) {
+					shiiresakiCodes[i].selected = true;
+					break;
+				}
+			}
+			document.getElementById("hakou").disabled = false;
+		}
+	}
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+		<form action="/search">
+			<table width="200" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td><div align="center">
+							<table border="0" cellpadding="5">
+								<tr align="left">
+									<th nowrap class="datafont" th:text="#{M00403}"></th>
+									<td nowrap><select id="shiiresakiCode"
+										name="shiiresakiCode" onchange="submit(this.form)">
+											<option value="">選択してください</option>
+											<option th:each="shiiresaki:${session.shiiresakiList}"
+												th:value="${shiiresaki.shiiresakiCode}"
+												th:text="${shiiresaki.shiiresakimei}"
+												th:selected="${session.shiiresakiCode==shiiresaki.shiiresakiCode}"></option>
+									</select></td>
+									<td><input type="submit" value="検索"
+										onclick="resetDisable()"></td>
+								</tr>
+								<tr align="left">
+									<th nowrap class="datafont">希望発注納期</th>
+									<td nowrap><input type="date" name="kibou_hachuu_nouki"
+										maxlength="10" size="12"></td>
+									<td colspan="2" nowrap class="datafont">（YYYY/MM/DD形式、省略時翌日）</td>
+								</tr>
+							</table>
+							<table th:if="${shouhinList != null}" width="468" border="1"
+								cellpadding="1" cellspacing="1" bordercolor="#000000">
+								<tr align="center" class="datafont">
+									<th width="36" nowrap class="datafont" th:text="#{NUMBER}" /></th>
+									<th width="74" nowrap class="datafont" th:text="#{T00202}"></th>
+									<th width="164" nowrap class="datafont" th:text="#{M00202}"></th>
+									<th width="30" nowrap class="datafont" th:text="#{M00204}"></th>
+									<th width="63" nowrap class="datafont" th:text="#{T00603}"></th>
+									<th width="68" nowrap class="datafont" th:text="#{M00205}"></th>
+								</tr>
+								<tr align="left" class="style25"
+									th:each="shouhin, status :${shouhinList}">
+									<td nowrap>[[${status.index}]]</td>
+									<td nowrap>[[${shouhin.shouhinCode}]]</td>
+									<td nowrap>[[${shouhin.shouhinmei}]]</td>
+									<td nowrap>[[${shouhin.tani}]]</td>
+									<td nowrap>[[${shouhin.hacchuuTani}]]</td>
+									<td nowrap>[[${shouhin.shiireTanka}]]</td>
+								</tr>
+							</table>
+							<table width="250" border="0" cellpadding="5">
+								<tr align="center">
+									<td><input type="submit" name="clear" value="クリア"></td>
+									<td><input type="submit" th:value="#{PUBLISH.TXT}"
+										name="hakou" id="hakou"
+										th:disabled="${#lists.isEmpty(shouhinList)}"></td>
+									<td><input type="button" name="finish" value="終了"
+										onclick="window.open('index.html','_self'); "></td>
+								</tr>
+							</table>
+						</div></td>
+				</tr>
+			</table>
+		</form>
+		<div align="center">
+			<form action="/login">
+				<input type="submit" th:value="#{logoff.safe}" />
+			</form>
+		</div>
+	</div>
+</body>
+</html>
